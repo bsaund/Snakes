@@ -1,0 +1,54 @@
+function [collision, lastReachablePoint] = checkCollisionOnPath(snake, p1, p2, resolution, display)
+%UNTITLED5 Summary of this function goes here
+%   Detailed explanation goes here
+
+
+if(nargin < 5)
+    display = false;
+end
+
+snake.setAngles(p1);
+collision = snake.checkCollisions;
+if(collision)
+    lastReachablePoint = [];
+    if(display)
+        snake.plot()
+    end
+    return
+end
+
+
+diff = p2-p1;
+numSteps = max(abs(diff))/resolution;
+
+if(numSteps == 0)
+    if(display)
+        snake.plot()
+    end
+    lastReachablePoint = p
+    return
+end
+
+
+for i = 0:numSteps
+    snake.setAngles(p1 + diff*i/numSteps);
+    if(display)
+        snake.plot()
+        pause(.1)
+    end
+    if(snake.checkCollisions)
+        collision = 1;
+        return
+    end
+    lastReachablePoint = p1+diff*i/numSteps;
+    
+    
+
+    
+end
+
+
+
+
+end
+
