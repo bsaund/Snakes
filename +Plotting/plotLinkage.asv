@@ -1,0 +1,29 @@
+function plotLinkage(snake)
+%UNTITLED11 Summary of this function goes here
+%   Detailed explanation goes here
+
+figure('un','n','nam','Snake','color','w','pos',[.1 .1 .8 .8])
+ma = axes('pos',[.15 .15 1 1]);
+axis off
+view(3)
+rotate3d
+grid on
+hold on
+axes('pos',[.01 .91 .45 .05])
+text('position',[0.01,.5],'string','x       y       z       r       p       y','fontsize',15,'fontangle','i')
+axis off
+axes(ma)
+transformationDisplay=uicontrol('sty','e','un','n','pos',[.01 .5 .225 .4],'backgroundcolor','w','max',2,'ho','l','fonts',10,'fontn','courier');
+
+displayText = [];
+for link=snake.links
+    displayText = strvcat(displayText, num2str(tr2xyzrpyDeg(link{1}.fk()),'%1.1f  '));
+end
+set(transformationDisplay,'sty','e')
+set(transformationDisplay, 'str', displayText)
+
+end
+
+
+function setTransformDisplay(snake)
+end

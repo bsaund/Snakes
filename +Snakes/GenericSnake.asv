@@ -52,23 +52,11 @@ classdef GenericSnake
             Plotting.plotSimpleLinkage(this.generateVertices');
         end
         
-        function collision = checkCollisions(this)
-            v = this.generateVertices()';
-            numvert = size(v,1);
+        function checkCollisions(this, v)
+            numvert = length(v,1);
             for i=5:numvert
-                p1=v(i,:);
-                p2=v(i-1,:);
-                
-                for j=2:(i-3)
-                    p3=v(j,:);
-                    p4=v(j-1,:);
-                    if(DistBetween2Segment(p1,p2,p3,p4) < 1)
-                        collision = true;
-                        return
-                    end
-                end
+                p1=
             end
-            collision = false;
         end
         
     end
