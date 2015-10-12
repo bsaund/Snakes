@@ -1,6 +1,17 @@
 classdef DummySnake < Snakes.GenericSnake
     %UNTITLED8 Summary of this class goes here
     %   Detailed explanation goes here
+    %                                                                      
+    %                       ____                                               
+    %                    _ /    /\                                          
+    %                  /   \___|  |                                                 
+    %      ____  ____ /   /    |  |                                                
+    %     |    \/    \|__/      \/_                                                
+    %     |____/\____/           |  \                                                 
+    %                            \   \ ____                                      
+    %                             \__|/   /\                                     
+    %                                 \___\/                                     
+    %                                                                      
     
     properties
     end

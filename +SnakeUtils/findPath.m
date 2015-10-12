@@ -8,7 +8,7 @@ end
 
 function path = findPathRRT(snake, p0, pG)
 t = tree();
-t.addNode(1, p0);
+t.addNode(0, p0);
 i = 0;
 pathFound = 0
 while(~pathFound)
@@ -33,6 +33,16 @@ t.addnode(pCloseInd, pnew);
 end
 
 function [t, pCloseInd, pClose] = findClosestPoint(t, p)
+minDist = inf;
+minNodeIDs = [];
+    
+for nodeID = t.Parent
+    for childID = t.getchildren(nodeID)
+        p0=t.Node{nodeID};
+        p1=t.Node{childID};
+        d = 
+    end
+end
 
 end
 
@@ -43,6 +53,5 @@ if( ~mod(index, 100))
     return
 end
 pX = rand(size(pG)) * 180 - 90;
-
     
 end
