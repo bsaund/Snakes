@@ -43,8 +43,8 @@ isOnBoundary2 = max([0, f2 <= 0, 2*(f2 >= 1)]);
 
 
 
-pSeg1 = p1_0 + min(1,max(0,f1)) * v1;
-pSeg2 = p2_0 + min(1,max(0,f2)) * v2;
+pSeg1 = (p1_0 + min(1,max(0,f1)) * v1)';
+pSeg2 = (p2_0 + min(1,max(0,f2)) * v2)';
 
 d = norm(pSeg1 - pSeg2);
 

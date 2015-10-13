@@ -62,7 +62,7 @@ classdef GenericSnake
                 for j=2:(i-3)
                     p3=v(j,:);
                     p4=v(j-1,:);
-                    if(DistBetween2Segment(p1,p2,p3,p4) < 1)
+                    if(distBetweenLineSegments(p1,p2,p3,p4) < 1)
                         collision = true;
                         return
                     end

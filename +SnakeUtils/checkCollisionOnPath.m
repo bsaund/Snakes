@@ -19,7 +19,7 @@ end
 
 
 diff = p1-p0;
-numSteps = max(abs(diff))/resolution;
+numSteps = round(max(abs(diff))/resolution);
 
 if(numSteps == 0)
     if(display)

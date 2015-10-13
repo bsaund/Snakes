@@ -121,6 +121,13 @@ classdef tree
         
         end
         
+        function [obj, ID] = insertNode(obj, curNode, data)
+            %Adds a new node between curNode and curNode's parent
+            
+            [obj, ID] = obj.addnode(obj.Parent(curNode), data);
+            obj.Parent(curNode) = ID;
+        end
+        
         function flag = isleaf(obj, ID)
            %% ISLEAF  Return true if given ID matches a leaf node.
            % A leaf node is a node that has no children.
