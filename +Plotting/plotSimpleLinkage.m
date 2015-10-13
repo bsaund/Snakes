@@ -6,7 +6,7 @@ clf('reset')
 numVert = size(vertices,1);
 
 for i = 2:numVert
-    c = 'k';
+    c = 'r';
     if(mod(i,2))
         c = 'b';
     end
@@ -15,7 +15,7 @@ for i = 2:numVert
 end
 axis equal
    
-b = numVert * 2 - 4;
+b = numVert * 1.5 - 4;
 axis([-b,b,-b,b,-b,b])
 
 end
