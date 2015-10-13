@@ -9,7 +9,7 @@ path = smoothPath(snake, path);
 end
 
 function path = prunePath(s, path)
-notPruned = path
+% notPruned = path
 p = 2;
 for ind = 2:(size(path,1) - 1)
     col = SnakeUtils.checkCollisionOnPath(s, path(p-1,:), path(p+1,:),10);
@@ -26,7 +26,7 @@ function path = smoothPath(s, path)
 %Attempt to make all paths from the RRT more smooth.
 numCords = size(path,2);
 numPoints = size(path,1);
-notSmoothed = path
+% notSmoothed = path
 progress = 1;
 weightedMean = @(a,b,wa) a*wa + b*(1-wa);
 weightings = ones(numPoints, numCords);
@@ -104,11 +104,6 @@ if(numel(t.Parent) == 1)
     pCloseInd = 1;
     return;
 end
-
-% if(numel(t.Parent) > 18)
-%     p
-%     numel(t.Parent)
-% end
     
 for childID = 2:numel(t.Parent)
     nodeID = t.getparent(childID);
