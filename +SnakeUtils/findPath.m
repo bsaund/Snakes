@@ -110,16 +110,17 @@ end
 %     numel(t.Parent)
 % end
     
-for nodeID = 1:numel(t.Parent)
-    for childID = t.getchildren(nodeID)
-        p0=t.Node{nodeID};
-        p1=t.Node{childID};
-        d = distBetweenLineSegments(p0,p1,p,p);
-        if(d < minDist)
-            minDist = d;
-            minNodeIDs = [nodeID, childID];
-        end
+for childID = 2:numel(t.Parent)
+    nodeID = t.getparent(childID);
+    
+    p0=t.Node{nodeID};
+    p1=t.Node{childID};
+    d = distBetweenLineSegments(p0,p1,p,p);
+    if(d < minDist)
+        minDist = d;
+        minNodeIDs = [nodeID, childID];
     end
+    
 end
 
 [~, pnew, ~, useBoundary, ~] = distBetweenLineSegments(...,
