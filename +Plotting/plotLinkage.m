@@ -62,11 +62,12 @@ P=T(1:3,4);
 Pnext = Tnext(1:3,4);
 
 plot3(P(1),P(2),P(3),'k.');
-[A,B,C]=cylinder(.5,10);
+[A,B,C]=cylinder(.5,20);
 cyl=surf(A.*.5+P(1),B.*.5+P(2),C.*.5+P(3));
 set(cyl,'facecolor',[.4 .8 .4])
 rotate(cyl, [0,1,0],90,P);
-
+set(findobj('type','surface'),'facealpha',.5,'edgecolor','k','edgealpha',.25)
+axis([-4,4,-4,4,-4,4])
 
 end
 

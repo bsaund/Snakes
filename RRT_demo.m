@@ -1,5 +1,5 @@
-  p0 = [-50,-70,70,-90,-40,90,0,-90];
-  pG = [-50,-70,-70,-90,0,90,0,-60];
+  p0 = [-50,-70,70,-90,-40,90,-60,-90];
+  pG = [-50,-70,-70,-90,0,90,60,-90];
 %   p0 = [90,90,-70,-90,10,90,-70,-10];
 %   pG = [0,0,-70,-90,40,90,-70,-90];
 %p0 = [0,0,-70,-90,40,90,0,-10,0,90,0,-90,-90,90,0,0];
@@ -10,6 +10,19 @@
 
 %  dbstop in findPath.m
 
+for i=1:4
+    s.setAngles(p0);
+    SnakeUtils.writeToPhysicalSnake(s);
+    
+    pause(2);
+    
+    s.setAngles(pG);
+    SnakeUtils.writeToPhysicalSnake(s);
+    pause(2);
+end
+
+s.setAngles(p0);
+SnakeUtils.writeToPhysicalSnake(s);
 
 
 %  %Simple
@@ -32,5 +45,5 @@ SnakeUtils.plotPaths(s,path,10);
 for(i = 1:size(path,1))
     s.setAngles(path(i,:));
     SnakeUtils.writeToPhysicalSnake(s);
-    pause(3);
+    pause(1);
 end

@@ -90,6 +90,8 @@ pClose = t.get(pCloseInd);
 [collision, pnew] = SnakeUtils.checkCollisionOnPath(snake, pClose, pG, 10);
 
 %Don't add new identical points
+% size(pnew)
+% size(pClose)
 if(max(abs(round(pnew-pClose))))
     t=t.addnode(pCloseInd, pnew); 
 end

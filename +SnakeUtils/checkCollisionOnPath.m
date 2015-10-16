@@ -10,7 +10,7 @@ end
 snake.setAngles(p0);
 collision = snake.checkCollisions;
 if(collision)
-    lastReachablePoint = [];
+    lastReachablePoint = p0;
     if(display)
         snake.plot()
     end

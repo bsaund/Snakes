@@ -52,7 +52,7 @@ classdef GenericSnake
             Plotting.plotSimpleLinkage(this.generateVertices');
         end
         
-        function collision = checkCollisionsDetailed(this)
+        function collision = checkCollisions(this)
             v = this.generateVertices()';
             numvert = size(v,1);
             for i=5:numvert
@@ -62,7 +62,7 @@ classdef GenericSnake
                 for j=2:(i-3)
                     p3=v(j,:);
                     p4=v(j-1,:);
-                    if(distBetweenLineSegments(p1,p2,p3,p4) < 1)
+                    if(distBetweenLineSegments(p1,p2,p3,p4) < 2)
                         collision = true;
                         return
                     end
@@ -71,7 +71,7 @@ classdef GenericSnake
             collision = false;
         end
         
-        function collision = checkCollisions(this)
+        function collision = checkCollisionsQ(this)
             v = this.generateVertices()';
             numvert = size(v,1);
             for i=5:numvert
