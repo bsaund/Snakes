@@ -10,19 +10,19 @@
 
 %  dbstop in findPath.m
 
-for i=1:4
-    s.setAngles(p0);
-    SnakeUtils.writeToPhysicalSnake(s);
-    
-    pause(2);
-    
-    s.setAngles(pG);
-    SnakeUtils.writeToPhysicalSnake(s);
-    pause(2);
-end
+% for i=1:4
+%     s.setAngles(p0);
+%     SnakeUtils.writeToPhysicalSnake(s);
+%     
+%     pause(2);
+%     
+%     s.setAngles(pG);
+%     SnakeUtils.writeToPhysicalSnake(s);
+%     pause(2);
+% end
 
 s.setAngles(p0);
-SnakeUtils.writeToPhysicalSnake(s);
+% SnakeUtils.writeToPhysicalSnake(s);
 
 
 %  %Simple
@@ -44,6 +44,6 @@ SnakeUtils.plotPaths(s,path,10);
 
 for(i = 1:size(path,1))
     s.setAngles(path(i,:));
-    SnakeUtils.writeToPhysicalSnake(s);
+%     SnakeUtils.writeToPhysicalSnake(s);
     pause(1);
 end

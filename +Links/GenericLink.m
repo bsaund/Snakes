@@ -7,6 +7,8 @@ classdef GenericLink < handle
         T_joint
         T_afterJoint
         theta
+        lb = -90;
+        ub = 90;
         
         transformationFromJointMotion
     end
