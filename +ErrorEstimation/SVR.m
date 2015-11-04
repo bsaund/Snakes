@@ -4,7 +4,7 @@ end
 
 function runData()
 close all
-load([fileparts(mfilename('fullpath')) '\error']);
+load([fileparts(mfilename('fullpath')) '/error']);
 [s,e] = ErrorEstimation.makeSnakes();
 
 C=4;
@@ -36,6 +36,8 @@ max(abs(y))
 max(abs(f - y))
 
 
+weights = sum(repmat(a,1,size(x,2)).*x)
+close all
 
 end
 
@@ -53,7 +55,9 @@ beq = zeros(4*n,1);
 H = [XKern, zeros(n, 3*n); zeros(3*n, 4*n)];
 lb = [-C*s; 0*s; 0*s; 0*s];
 ub = [C*s; 2*C*s; C*s; C*s];
-
+tic
 a = quadprog(H, f, [], [], Aeq, beq, lb, ub, [], optimset('Algorithm', ...
     'interior-point-convex'));
+toc
+
 end

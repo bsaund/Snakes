@@ -2,7 +2,7 @@ function generateErrorPoints()
 [s, e] = ErrorEstimation.makeSnakes();
 n = s.numLinks;
 
-numPoints = 100;
+numPoints = 12;
 inputAngles = rand(numPoints,n)*180 - 90;
 posError = zeros(numPoints, 6);
 Jacobians = zeros(n, 6, numPoints);
@@ -16,6 +16,6 @@ end
 
 
 
-save([fileparts(mfilename('fullpath')) '\error'], 'posError','inputAngles', 'Jacobians')
-
+save([fileparts(mfilename('fullpath')) '/error'], 'posError','inputAngles', 'Jacobians')
+close all
 end

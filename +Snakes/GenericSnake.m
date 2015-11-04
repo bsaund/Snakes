@@ -48,7 +48,7 @@ classdef GenericSnake
         function J = jacobian(this)
             angles = this.getAngles();
             pos = this.fkp();
-            da = .1;
+            da = .01;
             J = zeros(this.numLinks,size(pos,2));
             for i= 1:this.numLinks
                 t = angles;
