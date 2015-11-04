@@ -1,0 +1,31 @@
+classdef ErrorSnake < Snakes.GenericSnake
+    %UNTITLED8 Summary of this class goes here
+    %   Detailed explanation goes here
+    %                                               _____                       
+    %                       ____                   //---\\                           
+    %                    _ /    /\                ||     ||                     
+    %                  /   \___|  |                     //                           
+    %      ____  ____ /   /    |  |                    //                           
+    %     |    \/    \|__/      \/_                   ||                            
+    %     |____/\____/           |  \                 ||                               
+    %                            \   \ ____                                      
+    %                             \__|/   /\          {}                           
+    %                                 \___\/                                     
+    %                                                                      
+
+    
+    properties
+    end
+    
+    methods
+        function obj = ErrorSnake(numLinks)
+            links = {};
+            for i = 1:numLinks
+                links{i} = Links.GaussianConstantRandomLink();
+            end
+            obj@Snakes.GenericSnake(links);
+        end
+    end
+    
+end
+
