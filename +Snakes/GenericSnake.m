@@ -38,10 +38,25 @@ classdef GenericSnake
         end
         
         function angles = getAngles(this)
-            angles = [];
-            for i=1:length(this.links)
-                angles = [angles, this.links{i}.theta];
+            angles = cellfun(@(x) x.theta, this.links);
+        end
+        
+        function n = numLinks(this)
+            n = size(this.links,2);
+        end
+        
+        function J = jacobian(this)
+            angles = this.getAngles();
+            pos = this.fkp();
+            da = .1;
+            J = zeros(this.numLinks,size(pos,2));
+            for i= 1:this.numLinks
+                t = angles;
+                t(i) = t(i) + da;
+                this.setAngles(t);
+                J(i,:) = (this.fkp() - pos)/da;
             end
+            this.setAngles(angles);
         end
         
         function points = generateVertices(this)
