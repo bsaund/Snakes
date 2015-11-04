@@ -25,6 +25,16 @@ classdef ErrorSnake < Snakes.GenericSnake
             end
             obj@Snakes.GenericSnake(links);
         end
+        
+        function offset = getOffset(this)
+            offset = cellfun(@(x) x.offset, this.links);
+        end
+        
+        function setOffsets(this, offsets)
+            for i=1:length(this.links)
+                this.links{i}.setOffset(offsets(i));
+            end
+        end
     end
     
 end

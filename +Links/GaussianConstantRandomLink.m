@@ -8,7 +8,7 @@ classdef GaussianConstantRandomLink < Links.GenericLink
 %                        O __            //                                 
 %                        |   \          ||                                  
 %                        l    \         ||                                  
-%                         \ . `                                              
+%                         \ . `                                            
 %                                       {}                                
     
     properties
@@ -17,18 +17,20 @@ classdef GaussianConstantRandomLink < Links.GenericLink
     
     methods
         function obj = GaussianConstantRandomLink()
-            offset = randn()*180/pi;
+            offset = randn()*2;
             T_before = xyzrpy2tr([1,0,0,0,0,0]);
             T_after = xyzrpy2tr([1,0,0,0,0,pi/2]);
-            joint = @(theta) xyzrpy2tr([0,0,0,theta + offset,0,0]);
+            joint = @(theta) xyzrpy2tr([0,0,0,theta + offset*pi/180,0,0]);
             
             obj@Links.GenericLink(T_before, T_after, joint);
             obj.offset = offset;
             obj.setAngle(0);
         end
         
-        function offset = getOffset(this)
-            offset = this.offset;
+        function setOffset(this, offset)
+            this.offset = offset;
+            this.transformationFromJointMotion = ...
+                @(theta) xyzrpy2tr([0,0,0,theta + offset*pi/180,0,0]);
         end
             
     end
