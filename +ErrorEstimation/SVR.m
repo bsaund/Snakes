@@ -12,7 +12,9 @@ eps=0.001;
 kern = @(xi, xj) xi * xj';
 
 % x=inputAngles;
-x = squeeze(Jacobians(:,1,:))';
+J = squeeze(Jacobians(:,1,:))';
+x = [inputAngles, J, J.*inputAngles];
+% x = J;
 y = posError(:,1);
 n = size(x,1);
 k = zeros(n);
@@ -32,8 +34,10 @@ a = a(1:n);
 % save('learnedWeights', 'b','w', 'correct')
 
 f = k'*a;
-max(abs(y))
-max(abs(f - y))
+% max(abs(y))
+disp(['Uncomped error: Max: ' num2str(round(max(abs(y)),4)) ' average: ' num2str(mean(abs(y)))]);
+% max(abs(f - y))
+disp(['Comped error:   Max: ' num2str(round(max(abs(f-y)),4)) ' average: ' num2str(mean(abs(f-y)))]);
 
 
 weights = sum(repmat(a,1,size(x,2)).*x)

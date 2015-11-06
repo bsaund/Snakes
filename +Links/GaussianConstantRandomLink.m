@@ -14,6 +14,7 @@ classdef GaussianConstantRandomLink < Links.GenericLink
     properties
         offset
         scaling
+        transformOffset
     end
     
     methods
@@ -23,22 +24,39 @@ classdef GaussianConstantRandomLink < Links.GenericLink
             obj@Links.GenericLink(T_before, T_after,@(x) x);
             
             obj.offset = randn()*2;
+            obj.scaling = 0;
+            obj.transformOffset = 0;
    
-            obj.makeTransform();
+            obj.setTransform();
             
             obj.setAngle(0);
         end
         
         function setOffset(this, offset)
             this.offset = offset;
-            this.transformationFromJointMotion = this.makeTransform();
+            this.setTransform();
         end
         
+        function setScaling(this, scaling)
+            this.scaling = scaling;
+            this.setTransform();
+        end
+        
+        function setTransformOffset(this, offset)
+            this.transformOffset = offset;
+            this.setTransform();
+        end
 
-        function t = makeTransform(this)
-            t = @(theta) xyzrpy2tr([0,0,0,...
-                theta + this.offset*pi/180,...
-                0,0]);
+        function setTransform(this)
+            xi = this.transformOffset;
+            this.transformationFromJointMotion = @(theta) xyzrpy2tr([
+                0,...%x
+                0,...%y
+                0,...%z
+                this.scaling*theta + this.offset*pi/180,...%r
+                0,...%p
+                0,...%y
+                ] + xi);
         end
     end
     

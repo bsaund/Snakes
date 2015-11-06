@@ -2,7 +2,7 @@ function generateErrorPoints()
 [s, e] = ErrorEstimation.makeSnakes();
 n = s.numLinks;
 
-numPoints = 12;
+numPoints = 100;
 inputAngles = rand(numPoints,n)*180 - 90;
 posError = zeros(numPoints, 6);
 Jacobians = zeros(n, 6, numPoints);

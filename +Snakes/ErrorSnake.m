@@ -35,6 +35,18 @@ classdef ErrorSnake < Snakes.GenericSnake
                 this.links{i}.setOffset(offsets(i));
             end
         end
+        
+        function setScalings(this, scalings)
+            for i=1:length(this.links)
+                this.links{i}.setScaling(scalings(i));
+            end
+        end
+        
+        function setTransformOffsets(this, offsets)
+            for i=1:length(this.links)
+                this.links{i}.setTransformOffset(offsets(i,:));
+            end
+        end
     end
     
 end
