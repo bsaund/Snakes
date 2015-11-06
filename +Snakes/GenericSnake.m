@@ -70,6 +70,20 @@ classdef GenericSnake
             points(:,i+2) = T*[0;0;0;1];
         end
         
+        function [transforms, xyzrpy] = linksToEE(this)
+            transforms = zeros(4,4,this.numLinks);
+            xyzrpy = zeros(this.numLinks,6);
+            T = eye(4);
+     
+            for i = this.numLinks:-1:1
+                link = this.links{i};
+                transforms(:,:,i) = link.T_joint * link.T_afterJoint * T;
+                xyzrpy(i,:) = tr2xyzrpy(transforms(:,:,i));
+                T = link.fk()*T;
+            end
+            
+        end                
+        
         function plot(this)
             Plotting.plotSimpleLinkage(this.generateVertices');
         end
