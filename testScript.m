@@ -10,7 +10,7 @@
 
 %  dbstop in findPath.m
 
-
+%This is a dumb modification for demonstrating git
 
 %  %Simple
 %  p0 = [0,0,0,0,0,0,0,0];
