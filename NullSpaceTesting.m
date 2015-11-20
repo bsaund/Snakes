@@ -12,8 +12,9 @@ pos  = zeros(1,10);
 
 pos(2) = pi/8;
 pos(4) = pi/4;
-pos(6) = -pi/2;
+pos(6) = -pi/4;
 pos(8) = pi/4;
+pos(10) = -pi/4;
 cmd.position = pos;
 
 g.set(cmd)
@@ -31,7 +32,7 @@ tic
 t = toc
 i = 0;
 dir = 1;
-while t < 20
+while t < 100
     if i > 100
         i = 0;
         dir = -dir;
@@ -39,7 +40,7 @@ while t < 20
     
     n = null(s.jacobian()')';
     a = s.getAngles();
-    a = a + dir*n(2,:);
+    a = a + dir*n(1,:);
     s.setAngles(a);
     disp(num2str(fk(1:3,4)'))
     cmd.position = s.getHebiAngles;
