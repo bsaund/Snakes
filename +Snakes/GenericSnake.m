@@ -37,8 +37,16 @@ classdef GenericSnake
             end
         end
         
+        function setHebiAngles(this, angles)
+            this.setAngles(angles * 180/pi)
+        end
+        
         function angles = getAngles(this)
             angles = cellfun(@(x) x.theta, this.links);
+        end
+        
+        function angles = getHebiAngles(this)
+            angles = this.getAngles * pi/180;
         end
         
         function n = numLinks(this)
