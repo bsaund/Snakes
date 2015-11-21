@@ -17,6 +17,8 @@ pos(8) = pi/4;
 pos(10) = -pi/4;
 cmd.position = pos;
 
+cmd.torque = [0,1,0,-3,0,0,0,-.6,0,0];
+
 g.set(cmd)
 
 
@@ -42,6 +44,7 @@ while t < 100
     a = s.getAngles();
     a = a + dir*n(1,:);
     s.setAngles(a);
+    fk = s.fk();
     disp(num2str(fk(1:3,4)'))
     cmd.position = s.getHebiAngles;
     
