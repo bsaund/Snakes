@@ -6,14 +6,19 @@ import matplotlib.pyplot as plt
 from sklearn import cross_validation
 
 
-mat = scipy.io.loadmat('../+ErrorEstimation/errorScaling.mat')
+mat = scipy.io.loadmat('../+ErrorEstimation/errorThetaOffsets.mat')
 posError = mat['posError']
 jacobians = mat['Jacobians']
 inputAngles = mat['inputAngles']
 
-J = jacobians[:,1,:]
+J = jacobians[:,1,:].transpose()
 
-x_train, x_test, y_train, y_test = cross_validation.train_test_split(inputAngles, posError, test_size=0.3, random_state=0)
+inputs = np.append(inputAngles, J, axis=1);
+inputs = np.append(inputs, J * inputAngles, axis=1);
+
+
+
+x_train, x_test, y_train, y_test = cross_validation.train_test_split(inputs, posError, test_size=0.3, random_state=0)
 
 # y1 = posError[:,1]
 # y2 = posError[:,2]
@@ -43,7 +48,8 @@ y_org = np.sin(X_org[:,1]).ravel()
 
 ###############################################################################
 # Fit regression model
-svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.1)
+# svr_rbf = SVR(kernel='rbf', C=1e3, gamma=1)
+svr_rbf = SVR(kernel='linear')
 svr_lin = SVR(kernel='linear', C=1e3)
 svr_poly = SVR(kernel='poly', C=1e3, degree=2)
 # svr_anova = SVR(kernel='anova', 
@@ -51,16 +57,19 @@ svr_poly = SVR(kernel='poly', C=1e3, degree=2)
 # y_lin = svr_lin.fit(X, y).predict(X)
 # y_poly = svr_poly.fit(X, y).predict(X)
 
-pdb.set_trace()
+
 # f_lin_org = svr_lin.fit(X_org, y_org)
 
 
 
-f1_rbf = svr_rbf.fit(x, y1)
-f2_rbf = svr_rbf.fit(x, y2)
+f1_rbf = svr_rbf.fit(x, y1).predict(x)
+f2_rbf = svr_rbf.fit(x, y2).predict(x)
+
+f1_rbf_test = svr_rbf.fit(x, y1).predict(xt)
+f2_rbf_test = svr_rbf.fit(x, y2).predict(xt)
 # f_lin = svr_lin.fit(x, y).predict(x)
 
-
+pdb.set_trace()
 
 ###############################################################################
 # look at the results
@@ -78,12 +87,12 @@ f2_rbf = svr_rbf.fit(x, y2)
 # plt.scatter(x[:,1], f_lin, c='y')
 
 plt.scatter(y1, y2, c='r', label='Raw Position Error')
-plt.scatter(y1-f1_rbf.predict(x), y2-f2_rbf.predict(x), c='b', label='Corrected Postition Error')
+plt.scatter(y1-f1_rbf, y2-f2_rbf, c='b', label='Corrected Postition Error')
 
 plt.show()
 
 plt.scatter(yt1, yt2, c='r')
-plt.scatter(yt1 - f1_rbf.predict(xt), yt2 - f2_rbf.predict(xt), c='b')
+plt.scatter(yt1 - f1_rbf_test, yt2 - f2_rbf_test, c='b')
 
 plt.show()
 
