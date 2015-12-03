@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.svm import SVR
 import matplotlib.pyplot as plt
 from sklearn import cross_validation
+from sklearn.kernel_ridge import KernelRidge
 
 
 mat = scipy.io.loadmat('../+ErrorEstimation/errorThetaOffsets.mat')
@@ -11,11 +12,14 @@ posError = mat['posError']
 jacobians = mat['Jacobians']
 inputAngles = mat['inputAngles']
 
-J = jacobians[:,1,:].transpose()
+J = jacobians[:,0,:].transpose()
+J = np.reshape(jacobians, (48, 100)).transpose()
 
-inputs = np.append(inputAngles, J, axis=1);
-inputs = np.append(inputs, J * inputAngles, axis=1);
 
+
+# inputs = np.append(inputAngles, J, axis=1);
+# inputs = np.append(inputs, J * inputAngles, axis=1);
+inputs = J
 
 
 x_train, x_test, y_train, y_test = cross_validation.train_test_split(inputs, posError, test_size=0.3, random_state=0)
@@ -25,15 +29,32 @@ x_train, x_test, y_train, y_test = cross_validation.train_test_split(inputs, pos
 
 # x = inputAngles
 
-y1 = y_train[:,1]
-y2 = y_train[:,2]
+y1 = y_train[:,0]
+y2 = y_train[:,1]
 
-yt1 = y_test[:,1]
-yt2 = y_test[:,2]
+# y1 = posError[:,0]
+# y2 = posError[:,1]
+
+
+yt1 = y_test[:,0]
+yt2 = y_test[:,1]
 
 
 x = x_train
+# x = inputs
+
 xt = x_test
+
+pdb.set_trace()
+
+n = x.shape[0]
+k = np.zeros(shape=(n,n))
+for i in range(0, x.shape[0]):
+    for j in range(0, x.shape[0]):
+        k[i,j] = np.dot(x[i,:], x[j,:])
+
+
+
 
 
 ###############################################################################
@@ -49,27 +70,35 @@ y_org = np.sin(X_org[:,1]).ravel()
 ###############################################################################
 # Fit regression model
 # svr_rbf = SVR(kernel='rbf', C=1e3, gamma=1)
-svr_rbf = SVR(kernel='linear')
-svr_lin = SVR(kernel='linear', C=1e3)
+svr_lin = SVR(kernel='linear', epsilon=0.001, C=4)
+svr = SVR(kernel='precomputed', epsilon=.001, C=4)
+
+
 svr_poly = SVR(kernel='poly', C=1e3, degree=2)
 # svr_anova = SVR(kernel='anova', 
 # y_rbf = svr_rbf.fit(X, y).predict(X)
 # y_lin = svr_lin.fit(X, y).predict(X)
 # y_poly = svr_poly.fit(X, y).predict(X)
 
+krr_lin = KernelRidge(kernel='linear', alpha=.001)
+
 
 # f_lin_org = svr_lin.fit(X_org, y_org)
 
 
+# f1 = svr.fit(k, y1).predict(k)
+# f2 = svr.fit(k, y2).predict(k)
+f1 = svr_lin.fit(x, y1).predict(x)
+f2 = svr_lin.fit(x, y2).predict(x)
+# f1 = krr_lin.fit(x, y1).predict(x)
+# f2 = krr_lin.fit(x, y2).predict(x)
 
-f1_rbf = svr_rbf.fit(x, y1).predict(x)
-f2_rbf = svr_rbf.fit(x, y2).predict(x)
 
-f1_rbf_test = svr_rbf.fit(x, y1).predict(xt)
-f2_rbf_test = svr_rbf.fit(x, y2).predict(xt)
+# f1_rbf_test = svr_rbf.fit(x, y1).predict(xt)
+# f2_rbf_test = svr_rbf.fit(x, y2).predict(xt)
 # f_lin = svr_lin.fit(x, y).predict(x)
 
-pdb.set_trace()
+
 
 ###############################################################################
 # look at the results
@@ -87,13 +116,13 @@ pdb.set_trace()
 # plt.scatter(x[:,1], f_lin, c='y')
 
 plt.scatter(y1, y2, c='r', label='Raw Position Error')
-plt.scatter(y1-f1_rbf, y2-f2_rbf, c='b', label='Corrected Postition Error')
+plt.scatter(y1-f1, y2 - f2, c='b', label='Corrected Postition Error')
 
 plt.show()
 
-plt.scatter(yt1, yt2, c='r')
-plt.scatter(yt1 - f1_rbf_test, yt2 - f2_rbf_test, c='b')
+# plt.scatter(yt1, yt2, c='r')
+# plt.scatter(yt1 - f1_rbf_test, yt2 - f2_rbf_test, c='b')
 
-plt.show()
+# plt.show()
 
-
+pdb.set_trace()
