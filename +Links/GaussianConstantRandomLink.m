@@ -24,7 +24,7 @@ classdef GaussianConstantRandomLink < Links.GenericLink
             obj@Links.GenericLink(T_before, T_after,@(x) x);
             
             obj.offset = randn()*2;
-            obj.scaling = 0;
+            obj.scaling = 1;
             obj.transformOffset = 0;
    
             obj.setTransform();
