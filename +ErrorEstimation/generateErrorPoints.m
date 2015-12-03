@@ -16,6 +16,6 @@ end
 
 
 
-save([fileparts(mfilename('fullpath')) '/error'], 'posError','inputAngles', 'Jacobians')
+save([fileparts(mfilename('fullpath')) '/errorThetaOffsets'], 'posError','inputAngles', 'Jacobians')
 close all
 end

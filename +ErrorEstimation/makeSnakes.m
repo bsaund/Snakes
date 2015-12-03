@@ -19,6 +19,6 @@ hardcodedTransformOffsets = [...
     .1, .1, .1, .01, .01, .01;];
 
 e.setOffsets(hardcodedOffsets);
-e.setScalings(hardcodedScalings);
-e.setTransformOffsets(hardcodedTransformOffsets);
+% e.setScalings(hardcodedScalings);
+% e.setTransformOffsets(hardcodedTransformOffsets);
 end

@@ -4,7 +4,8 @@ end
 
 function runData()
 close all
-load([fileparts(mfilename('fullpath')) '/error']);
+% load([fileparts(mfilename('fullpath')) '/error']);
+load([fileparts(mfilename('fullpath')) '/errorThetaOffsets']);
 [s,e] = ErrorEstimation.makeSnakes();
 
 C=4;
