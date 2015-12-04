@@ -15,7 +15,7 @@ def getRelevantInputs(x_train, x_test, y_train, y_test, outputNum):
     y_test = y_test[:,outputNum]
     return x_train, x_test, y_train, y_test
 
-mat = scipy.io.loadmat('../+ErrorEstimation/errorScaling.mat')
+mat = scipy.io.loadmat('../+ErrorEstimation/errorThetaOffsets.mat')
 posError = mat['posError']
 jacobians = mat['Jacobians']
 inputAngles = mat['inputAngles']
@@ -41,51 +41,15 @@ def createInputs(inputAngles, J):
     # inputs = np.append(inputs, J * inputAngles, axis=1);
     return inputs
 
-# x_train, x_test, y_train, y_test = cross_validation.train_test_split(inputs, posError, test_size=0.3, random_state=0)
-# x_train, x_test, y_train, y_test = cross_validation.train_test_split(inputs, posError[:,0], test_size=0.3, random_state=0)
-
-
-
-
 x1 = createInputs(inputAngles, jacobians[:,0,:].transpose())
 y1 = posError[:,0]
 
 x2 = createInputs(inputAngles, jacobians[:,1,:].transpose())
 y2 = posError[:,1]
 
-# x1 = inputs
-
-# y1 = posError[:,0]
-# my1 = np.abs(np.mean(y1))
-# y1 = y1/my1
-
-# x_train = inputs
-
-# y2 = y_train[:,1]
-
-# # y1 = posError[:,0]
-# # y2 = posError[:,1]
 
 
-# yt1 = y_test[:,0]
-# yt2 = y_test[:,1]
-
-
-# x = x_train
-# x = inputs
-
-# x1, xt1, y1, yt1 = getRelevantInputs(x_train, x_test, y_train, y_test, 0)
-# x1 = inputs
-# xt1 = x_test
-# y1 = posError[:,0]
-# yt1 = y_test
-# x2, xt2, y2, yt2 = getRelevantInputs(x_train, x_test, y_train, y_test, 1)
-
-# xt = x_test
-
-# pdb.set_trace()
-
-def computeKernel(x):
+def computeLinearKernel(x):
     n = x.shape[0]
     k = np.zeros(shape=(n,n))
     for i in range(0, x.shape[0]):
@@ -93,18 +57,18 @@ def computeKernel(x):
             k[i,j] = np.dot(x[i,:], x[j,:])
     return k
 
+def computeTestKernel(x):
+    n = x.shape[0]
+    k = np.zeros(shape=(n,n))
+    for i in range(0, x.shape[0]):
+        for j in range(0, x.shape[0]):
+            k[i,j] = np.dot(x[i,:], x[j,:])  + np.dot(x[i,0:8]* x[j,8:16], x[i,8:16] * x[j,0:8])
+    return k
 
 
 
-###############################################################################
-# Generate sample data
-# X_org = np.sort(5 * np.random.rand(100, 8), axis=0)
-X_org = 5 * np.random.rand(100, 8) - 10
-y_org = np.sin(X_org[:,1]).ravel()
 
-###############################################################################
-# Add noise to targets
-# y_org[::5] += 3 * (0.5 - np.random.rand(8))
+
 
 ###############################################################################
 # Fit regression model
@@ -134,8 +98,8 @@ krr = KernelRidge(kernel='precomputed', alpha=.001)
 # f2 = krr_lin.fit(x2, y2).predict(x2)
 pdb.set_trace()
 
-k1 = computeKernel(x1)
-k2 = computeKernel(x2)
+k1 = computeLinearKernel(x1)
+k2 = computeLinearKernel(x2)
 
 # f1 = krr_lin.fit(x_train, y1).predict(x_train)
 # f1 = krr_lin.fit(x1, y1).predict(x1)
@@ -176,14 +140,14 @@ plt.scatter(y1-f1, y2 - f2, c='b', label='Corrected Postition Error')
 
 # plt.scatter(yt1, yt2, c='r', label='End Effector Position Error')
 # plt.scatter(yt1 - f1_test, yt2 - f2_test, c='b', label='Compensated End Effector Position Error')
-plt.title('Cross Validated Positional Error in Simulation')
+plt.title('Simple Error, Linear Kernel')
 plt.xlabel('Error in robot X')
 plt.ylabel('Error in robot Y')
 plt.legend()
 
 fig = plt.gcf()
-c = plt.Circle((0,0),.015, color='b', fill=False)
-c2 = plt.Circle((-.015,.014), .2, color='r', fill=False)
+c = plt.Circle((np.mean(y1-f1),np.mean(y2-f2)),.015, color='b', fill=False)
+c2 = plt.Circle((np.mean(y1), np.mean(y2)), .2, color='r', fill=False)
 fig.gca().add_artist(c)
 fig.gca().add_artist(c2)
 plt.axis('equal')
