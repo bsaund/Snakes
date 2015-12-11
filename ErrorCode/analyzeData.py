@@ -5,6 +5,7 @@ from sklearn.svm import SVR
 import matplotlib.pyplot as plt
 from sklearn import cross_validation
 from sklearn.kernel_ridge import KernelRidge
+from sklearn.grid_search import GridSearchCV
 
 
 
@@ -15,7 +16,7 @@ def getRelevantInputs(x_train, x_test, y_train, y_test, outputNum):
     y_test = y_test[:,outputNum]
     return x_train, x_test, y_train, y_test
 
-mat = scipy.io.loadmat('../+ErrorEstimation/errorThetaOffsets.mat')
+mat = scipy.io.loadmat('../+ErrorEstimation/errorScalingWithNoise.mat')
 posError = mat['posError']
 jacobians = mat['Jacobians']
 inputAngles = mat['inputAngles']
@@ -36,6 +37,12 @@ inputs = np.append(inputs, J * inputAngles, axis=1);
 # inputs = np.append(inputs, inputAngles, axis=1)
 # inputs = J
 
+
+# x_train, x_test, y_train, y_test = cross_validation.train_test_split(inputs, posError, test_size=0.7, random_state=0
+
+x_train_points, x_test_points, y_train_points, y_test_points = \
+    cross_validation.train_test_split(range(0,inputs.shape[0]), range(inputs.shape[0]), test_size=0.3, random_state=0)
+
 def createInputs(inputAngles, J):
     inputs = np.append(inputAngles, J, axis=1);
     # inputs = np.append(inputs, J * inputAngles, axis=1);
@@ -43,9 +50,17 @@ def createInputs(inputAngles, J):
 
 x1 = createInputs(inputAngles, jacobians[:,0,:].transpose())
 y1 = posError[:,0]
+xt1 = x1[x_test_points,:]
+x1 = x1[x_train_points,:]
+yt1 = y1[y_test_points]
+y1 = y1[y_train_points]
 
 x2 = createInputs(inputAngles, jacobians[:,1,:].transpose())
 y2 = posError[:,1]
+xt2 = x2[x_test_points,:]
+x2 = x2[x_train_points,:]
+yt2 = y2[y_test_points]
+y2 = y2[y_train_points]
 
 
 
@@ -57,12 +72,14 @@ def computeLinearKernel(x):
             k[i,j] = np.dot(x[i,:], x[j,:])
     return k
 
-def computeTestKernel(x):
-    n = x.shape[0]
-    k = np.zeros(shape=(n,n))
-    for i in range(0, x.shape[0]):
-        for j in range(0, x.shape[0]):
-            k[i,j] = np.dot(x[i,:], x[j,:])  + np.dot(x[i,0:8]* x[j,8:16], x[i,8:16] * x[j,0:8])
+def computeTestKernel(x1, x2):
+    n1 = x1.shape[0]
+    n2 = x2.shape[0]
+
+    k = np.zeros(shape=(n1,n2))
+    for i in range(0, n1):
+        for j in range(0, n2):
+            k[i,j] = np.dot(x1[i,:], x2[j,:])  + np.dot(x1[i,0:8]* x2[j,8:16], x1[i,8:16] * x2[j,0:8])
     return k
 
 
@@ -72,7 +89,11 @@ def computeTestKernel(x):
 
 ###############################################################################
 # Fit regression model
-# svr_rbf = SVR(kernel='rbf', C=1e3, gamma=1)
+# svr_rbf = SVR(kernel='rbf', C=1000, gamma=.00001, epsilon=0.01)
+svr_rbf = GridSearchCV(SVR(kernel='rbf', C=1000, gamma=.00001, epsilon=0.01), cv=5,
+                       param_grid={"C": np.logspace(1,5,5),
+                                   "gamma": np.logspace(-2,2,5)})
+
 svr_lin = SVR(kernel='linear', epsilon=0.005, C=4)
 # svr = SVR(kernel='precomputed', epsilon=.001/my1, C=16)
 
@@ -98,15 +119,28 @@ krr = KernelRidge(kernel='precomputed', alpha=.001)
 # f2 = krr_lin.fit(x2, y2).predict(x2)
 pdb.set_trace()
 
-k1 = computeLinearKernel(x1)
-k2 = computeLinearKernel(x2)
+# k1 = computeLinearKernel(x1)
+# k2 = computeLinearKernel(x2)
+
+# kt1 = computeLinearKernel(xt1)
+# kt2 = computeLinearKernel(xt2)
+k1 = computeTestKernel(x1,x1)
+k2 = computeTestKernel(x2,x2)
+
+kt1 = computeTestKernel(xt1,x1)
+kt2 = computeTestKernel(xt2,x2)
 
 # f1 = krr_lin.fit(x_train, y1).predict(x_train)
 # f1 = krr_lin.fit(x1, y1).predict(x1)
 # f2 = krr_lin.fit(x2, y2).predict(x2)
 
-f1 = krr.fit(k1, y1).predict(k1)
-f2 = krr.fit(k2,y2).predict(k2)
+ft1 = krr.fit(k1, y1).predict(kt1)
+ft2 = krr.fit(k2,y2).predict(kt2)
+
+# f1 = svr_rbf.fit(x1, y1).predict(x1)
+# f2 = svr_rbf.fit(x2, y2).predict(x2)
+# ft1 = svr_rbf.fit(x1, y1).predict(xt1)
+# ft2 = svr_rbf.fit(x2, y2).predict(xt2)
 
 # f1_k = svr.fit(k, y1).predict(k)
 # f1 = svr_lin.fit(x_train, y1).predict(x_train)
@@ -133,21 +167,21 @@ f2 = krr.fit(k2,y2).predict(k2)
 # plt.scatter(x[:,1], f_rbf, c='g')
 # plt.scatter(x[:,1], f_lin, c='y')
 
-plt.scatter(y1, y2, c='r', label='Raw Position Error')
-plt.scatter(y1-f1, y2 - f2, c='b', label='Corrected Postition Error')
+# plt.scatter(y1, y2, c='r', label='Raw Position Error')
+# plt.scatter(y1-f1, y2 - f2, c='b', label='Corrected Postition Error')
 
 # plt.show()
 
-# plt.scatter(yt1, yt2, c='r', label='End Effector Position Error')
-# plt.scatter(yt1 - f1_test, yt2 - f2_test, c='b', label='Compensated End Effector Position Error')
-plt.title('Simple Error, Linear Kernel')
+plt.scatter(yt1, yt2, c='r', label='End Effector Position Error')
+plt.scatter(yt1 - ft1, yt2 - ft2, c='b', label='Compensated End Effector Position Error')
+plt.title('Error with Added Measurement Noise')
 plt.xlabel('Error in robot X')
 plt.ylabel('Error in robot Y')
 plt.legend()
 
 fig = plt.gcf()
-c = plt.Circle((np.mean(y1-f1),np.mean(y2-f2)),.015, color='b', fill=False)
-c2 = plt.Circle((np.mean(y1), np.mean(y2)), .2, color='r', fill=False)
+c = plt.Circle((np.mean(yt1-ft1),np.mean(yt2-ft2)),.1, color='b', fill=False)
+c2 = plt.Circle((np.mean(yt1), np.mean(yt2)), .35, color='r', fill=False)
 fig.gca().add_artist(c)
 fig.gca().add_artist(c2)
 plt.axis('equal')
