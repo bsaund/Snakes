@@ -5,7 +5,7 @@ end
 function runData()
 close all
 % load([fileparts(mfilename('fullpath')) '/error']);
-load([fileparts(mfilename('fullpath')) '/errorThetaOffsets']);
+load([fileparts(mfilename('fullpath')) '/errorScaling']);
 [s,e] = ErrorEstimation.makeSnakes();
 
 C=4;
@@ -14,7 +14,8 @@ kern = @(xi, xj) xi * xj';
 
 % x=inputAngles;
 J = squeeze(Jacobians(:,1,:))';
-x = [inputAngles, J, J.*inputAngles];
+% x = [inputAngles, J, J.*inputAngles];
+x = [inputAngles, J];
 % x = J;
 y = posError(:,1);
 n = size(x,1);
@@ -23,6 +24,7 @@ for i=1:n
     
     for j=1:n
         k(i,j) = kern(x(i,:), x(j,:));
+%         k(i,j) = kern(
     end
 end
 
