@@ -47,7 +47,7 @@ info = g.getInfo();
 
 gains = GainStruct();
           gains.control_strategy= 4;
-               gains.position_kp= 15;
+               gains.position_kp= 8;
                gains.position_ki= 0;
                gains.position_kd= 27;
                gains.position_ff= 0;
